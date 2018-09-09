@@ -1,0 +1,409 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f0f0f0;
+  font-family: 'Lato', sans-serif;
+}
+
+*:focus {
+  outline: none;
+}
+
+$my-orange: #F28A21;
+$my-gray: #f0f0f0;
+$my-green: #55B749;
+$shadow: 0 0 4px 1px rgba(0, 0, 0, 0.3);
+$cat-border-radius: 5px;
+$cat-background-color: #fff;
+@mixin cat-border($cat-border-radius, $cat-background-color) {
+  border-radius: $cat-background-color;
+  background-color: $cat-background-color;
+}
+
+/* Login */
+.login {
+  margin: 0 auto;
+  &.center, .login-form {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+  form {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    span {
+      text-align: center;
+    }
+  }
+}
+.cat-border {
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+
+div.login {
+  width: 300px;
+  height: 300px;
+  top: 100px;
+  box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+div.login-form {
+  width: 300px;
+  position: relative;
+  bottom: -40px;
+}
+
+.center span {
+  font-weight: 900;
+}
+
+.login input {
+  width: 80%;
+  height: 50px;
+  line-height: 50px;
+  margin: 0 auto;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  border-radius: 5px;
+  border: 1px solid #f0f0f0;
+  background-color: #fff;
+  padding-left: 10px;
+}
+
+.login input:focus {
+  outline: none;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 0 6px 4px rgba(242, 138, 33, 0.25);
+}
+
+.login button {
+  display: block;
+  background-color: #F28A21; /* #55B749; */
+  color: #fff;
+  border: none;
+  width: 100%;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  height: 50px;
+  line-height: 50px;
+}
+
+.login button:hover {
+  cursor: pointer;
+}
+
+.login button:focus {
+  outline: none;
+}
+
+.arrow {
+  width: 50px;
+  height: 25px;
+  position: absolute;
+  top: 0;
+  z-index: -1;
+}
+
+#left-arrow {
+  left: 20%;
+}
+
+#right-arrow {
+  left: 60%;
+}
+
+.arrow::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: white;
+  transform: translateX(-50%) translateY(-50%) rotate(45deg);
+  top: 0;
+  left: 50%;
+  box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.3);
+}
+
+/* NewOrder */
+
+.new-order {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 50px auto;
+  padding: 40px;
+  width: 80vw;
+  border-radius: 5px;
+  box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.3);
+  background-color: #fff;
+  h1 {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  ul {
+    list-style: none;
+  }
+;
+  .customer {
+    display: block;
+    font-size: 1.6em;
+    margin-bottom: 20px;
+    input {
+      border: none;
+      border-bottom: 1px solid $my-orange;
+      padding: 5px;
+      margin: 5px;
+    }
+    input:focus {
+      outline: none;
+    }
+  }
+  .item-component, .logo-component {
+    border: 1px solid $my-gray;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    input {
+      border: none;
+      border-bottom: 1px solid $my-gray;
+      padding: 5px;
+      margin: 5px;
+    }
+    input:focus {
+      outline: none;
+      border-bottom: 1px solid $my-orange;
+    }
+    label {
+      display: block;
+      position: relative;
+      padding: 5px;
+      margin: 5px;
+    }
+    .dimensions {
+      text-align: center;
+      width: 50px;
+    }
+    textarea {
+      display: block;
+      border: 1px solid $my-gray;
+      padding: 5px;
+      margin-top: 5px;
+      border-radius: 5px;
+      width: 100%;
+    }
+    textarea:focus {
+      outline: none;
+      border: 1px solid $my-orange;
+    }
+
+    button.add-item, button.add-logo {
+      padding: 5px 10px;
+      margin: 20px;
+      position: absolute;
+      top: 0;
+      right: 10px;
+      background-color: #fff;
+      border: 1px solid $my-orange;
+      border-radius: 25px;
+    }
+    button.add-logo {
+      background-color: $my-gray;
+      border: none;
+    }
+    button.add-item:hover, button.add-logo:hover {
+      box-shadow: $shadow;
+      background-color: $my-green;
+      border: none;
+      color: #fff;
+    }
+    button.remove-item, button.remove-logo {
+      width: 20px;
+      height: 20px;
+      font-size: 20px;
+      line-height: 20px;
+      margin: 5px;
+      background-color: #fff;
+      color: black;
+      border: 1px solid $my-orange;
+      border-radius: 50%;
+    }
+  ;
+    button.remove-logo {
+      background-color: $my-gray;
+      border: none;
+    }
+    button.remove-item:hover, button.remove-logo:hover {
+      box-shadow: $shadow;
+      background-color: red;
+      border: none;
+    }
+    .item-qty {
+      border: 1px solid $my-gray;
+      border-radius: 5px;
+      padding: 10px;
+      margin: 0 10px;
+      .sizeOption {
+        border: none;
+      }
+      button.add-qty {
+        padding: 5px 10px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-color: $my-orange;
+        color: #fff;
+        border: none;
+        border-radius: 25px;
+      }
+      button.add-qty:hover {
+        background-color: $my-green;
+      }
+      button.remove-qty {
+        width: 20px;
+        height: 20px;
+        font-size: 20px;
+        line-height: 20px;
+        margin: 5px;
+        background-color: $my-orange;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+      }
+      button:hover {
+        box-shadow: $shadow;
+        background-color: red;
+      }
+      button:focus {
+        outline: none;
+      }
+    }
+  }
+  button.submit {
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    background-color: $my-green;
+    color: #fff;
+    font-size: 1.2em;
+    padding: 10px;
+  }
+  button.submit:hover {
+    box-shadow: $shadow;
+  }
+}
+
+/* Main */
+
+.main {
+  position: absolute;
+  .header {
+    width: 100vw;
+    height: 50px;
+    line-height: 30px;
+    padding: 10px 20px;
+    background-color: darkslateblue;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+  }
+  .options {
+    margin: 0 auto;
+    margin-top: 50px;
+    width: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    box-shadow: $shadow;
+    border-radius: 10px;
+    button {
+      width: 150px;
+      height: 150px;
+      text-align: center;
+      border: none;
+      &.tl {
+        border-top-left-radius: 10px;
+      }
+      &.tr {
+        border-top-right-radius: 10px;
+      }
+      &.bl {
+        border-bottom-left-radius: 10px;
+      }
+      &.br {
+        border-bottom-right-radius: 10px;
+      }
+    }
+    button:hover {
+      background-color: $my-orange;
+      color: #fff;
+    }
+  }
+}
+
+.summaryTable {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  h1 {
+    border-bottom: 2px solid $my-orange;
+    padding: 10px;
+    margin: 10px;
+  }
+  h2 {
+    padding: 10px;
+    margin: 10px;
+  }
+  table {
+    margin: 25px;
+    th, td {
+      padding: 10px;
+    }
+    tr:first-child {
+      border-bottom: 2px solid $my-orange;
+    }
+    tr:last-child {
+      border-top: 2px solid $my-orange;
+    }
+    tfoot {
+      span.label {
+        text-align: right;
+      }
+      span.value {
+        color: $my-orange;
+      }
+    }
+  }
+  button {
+    margin: 20px;
+    color: #fff;
+    width: 100px;
+    height: 50px;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    &.proceed {
+      background-color: $my-green;
+    }
+    &.back {
+      background-color: #FFD700;
+    }
+  }
+  button:hover {
+    box-shadow: $shadow;
+  }
+}
