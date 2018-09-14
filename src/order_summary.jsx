@@ -1,27 +1,44 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import firebase, {db}  from './firebase_config.jsx';
-import { savePDF } from '@progress/kendo-react-pdf';
-
 
 class OrderSummary extends React.Component {
-    exportPDFWithMethod = () => {
-        savePDF(ReactDOM.findDOMNode(this.summaryDocument), { paperSize: 'A4' });
+
+    updateCounter = () => {
+        let idRef = db.collection("Counter").doc("Count1");
+        // wyciągnięcie aktualnego id:
+        idRef.get().then(function(doc) {
+            if (doc.exists) {
+                console.log("Counter - data:", doc.data().counter);
+                // ustawienie nowego id:
+                return idRef.update({
+                    counter: doc.data().counter+1
+                })
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("Counter - No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Counter - Error getting document:", error);
+        });
     };
+
     saveOrder = () => {
-        db.collection("Orders").doc("Zamówienie "+this.props.orderInfo.id).set(this.props.orderInfo)
+        db.collection("Orders").doc("Zamówienie "+this.props.orderInfo.id)
+            .set(this.props.orderInfo)
             .then(() => {
-                console.log("Zamówienie dodane do bazy");
-                this.exportPDFWithMethod();
-                this.props.proceed("main");
+                console.log("Zamówienie dodane do bazy.");
+                this.updateCounter();
             })
             .catch((error) => {
                 console.error("Error writing document: ", error);
             });
+        this.props.proceed("main"); // powrót na stronę główną
     };
+
     editOrder = () => {
         this.props.backToEdit(false)
     };
+
     generateItemTable = (arr) => {
         let itemTable = [];
         for (let i=0; i<arr[0].length; i++) {
@@ -37,15 +54,13 @@ class OrderSummary extends React.Component {
             itemTable: itemTable,
             totalPrice: totalPrice
         };
-        console.log('generateItemTable, itemTable, totalPrice:');
-        console.log(arr);
-       console.log(itemTable);
-        console.log(totalPrice);
-       return results
+        return results
     };
+
     showTotalPrice = (arr) => {
-      return arr.reduce((a, b) => a+b)
+        return arr.reduce((a, b) => a+b)
     };
+
     calculatePrice = () => { // metoda oblicza cenę dla pojedynczego logo oraz koszt opracowania logo
 
         let flexPrice = this.props.priceInfo.flexPrice;
@@ -67,7 +82,6 @@ class OrderSummary extends React.Component {
         let logoQty500 = this.props.priceInfo.logoQty500;
         let logoQty1000 = this.props.priceInfo.logoQty1000;
 
-
         let logoArrPricesPerEachItem = [];
         let logoArrPricesPerEachLogoDesign = [];
 
@@ -81,8 +95,6 @@ class OrderSummary extends React.Component {
             let colors = singleLogo.colors;
             let complexity = singleLogo.complexity;
             let area = singleLogo.area;
-
-            console.log(singleLogo);
 
             if (!price) {        // w przypadku gotowego opracowanego logo zamawianego z zewnątrz
                 singlePrice = 0;
@@ -184,7 +196,6 @@ class OrderSummary extends React.Component {
                         singlePrice *= logoQty1000;
                         break;
                 }
-                console.log('ilość logo ogólnie: '+checkedItemsQty.reduce((a, b) => a + b ))
 
                 // pusznięcie do tablicy pojedynczych tablic z cenami dla konkretnych Items:
                 // czyli logoArrPricesPerEachItem.length odpowiada liczbie różnych log
@@ -193,23 +204,8 @@ class OrderSummary extends React.Component {
 
                 // tablica z cenami designu dla poszczególnych logo:
                 logoArrPricesPerEachLogoDesign.push(Math.round(designPrice*100)/100);
-
-                console.log(checkedItemsQty.reduce((a, b) => a + b )+", "+designPrice+", "+singlePrice);
-                console.log('tablica checkedItemsQty:');
-                console.log(checkedItemsQty);
             }
         }
-
-        console.log('logoArrPricesPerEachItem:');
-        console.log(logoArrPricesPerEachItem);
-        console.log('logoArrPricesPerEachLogoDesign:');
-        console.log(logoArrPricesPerEachLogoDesign);
-
-        // tablice do wygenerowania tabelki Item:
-        //logoArrPricesPerEachItem
-        //itemsQtyArr
-        //itemsValuesArr
-        //itemsColorArr
 
         itemMasterArr.push(logoArrPricesPerEachItem); // STEP 4 - kolumna 4 tabeli Items !
 
@@ -229,30 +225,30 @@ class OrderSummary extends React.Component {
     render() {
         let tbody = this.calculatePrice().itemTable;
         let itemTotalPrice = this.calculatePrice().totalPrice;
-        let summaryDocument = <div>
+        let summaryDocument = <div ref={(summaryDocument) => this.summaryDocument = summaryDocument}>
             <h1>PODSUMOWANIE</h1>
             <h2>Artykuły</h2>
-        <table>
-            <thead>
-            <tr>
-                <th key="number">Lp.</th>
-                <th key="name">Artykuł</th>
-                <th key="qty">Ilość</th>
-                <th key="color">Kolor</th>
-                <th key="priceOne">Cena/szt.<br/>[PLN]</th>
-                <th key="priceAll">Cena łączna<br/>[PLN]</th>
-            </tr>
-            </thead>
-            <tbody>
-            {tbody}
-            </tbody>
-            <tfoot>
-            <tr>
-                <td key="total" className={"label"} colSpan={5}><span>RAZEM</span></td>
-                <td key="price"><span className={"value"}>{itemTotalPrice} zł</span></td>
-            </tr>
-            </tfoot>
-        </table>
+            <table>
+                <thead>
+                <tr>
+                    <th key="number">Lp.</th>
+                    <th key="name">Artykuł</th>
+                    <th key="qty">Ilość</th>
+                    <th key="color">Kolor</th>
+                    <th key="priceOne">Cena/szt.<br/>[PLN]</th>
+                    <th key="priceAll">Cena łączna<br/>[PLN]</th>
+                </tr>
+                </thead>
+                <tbody>
+                {tbody}
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td key="total" className={"label"} colSpan={5}><span>RAZEM</span></td>
+                    <td key="price"><span className={"value"}>{itemTotalPrice} zł</span></td>
+                </tr>
+                </tfoot>
+            </table>
         </div>;
 
         return <div className={"summaryTable"}>

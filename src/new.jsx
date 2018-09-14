@@ -35,7 +35,7 @@ class NewOrder extends React.Component {
             order: null,             // w chwili submit form pushuje się kompletne, zwlaidowane zamówienie
             validationOk: true,    // jeśli formularz jest dobrze wypełniony TODO walidacja
             showSummary: false,     // jeśli true - chowa formularz i pokazuje podsumowanie
-            priceInfo: {},
+            priceInfo: {}
         };
     }
     // dodawanie i usuwanie dzieci
@@ -200,7 +200,7 @@ class NewOrder extends React.Component {
     };
     // przejście do podsumowania
     getPricelist = () => { // metoda uruchamiana w sumOrder - ściąga konfig cecnnika z FireBase
-        let priceRef = db.collection("Specs").doc("bBsNG2BYx1jqnCJLxDm3");
+        let priceRef = db.collection("Specs").doc("bBsNG2BYx1jqnCJLxDm3"); // kolekcja ze specyfikacją cennika
         priceRef.get().then((doc) => {
             if (doc.exists) {
                 console.log("Document data:", doc.data());
@@ -213,27 +213,42 @@ class NewOrder extends React.Component {
             console.log("Error getting document:", error);
         });
     };
+
     sumOrder = (e) => {
         e.preventDefault();
-        if (this.state.validationOk) {
-            let currentTime = new Date();
-            let currentMonth = currentTime.getMonth()+1
-            let orderInfo = {                      // obiekt finalny (dane wpychane w momencie submit, po pomyślnej walidacji)
-                id: 1,                             // tu ma być kolejne ID z FireBase? TODO
-                date: currentTime.getFullYear()+"/"+currentMonth+"/"+currentTime.getDate(),
-                status: "OPEN",
-                user: "Aneta",  // tu ma być zalogowany user TODO
-                customer: this.state.customer,
-                item: this.state.itemList,
-                logo: this.state.logoList
-            };
-            this.getPricelist();                  // ściągnięcie cennika z Firebase
-            this.setState({order: orderInfo});    // zapisanie zamówienia do state
-            this.setState({showSummary: true})    // pokazanie podsumowania (do finalnego zatwierdzenia)
-        }
+
+        let currentTime = new Date();
+        let currentMonth = currentTime.getMonth()+1;
+        let orderInfo = {                     // obiekt finalny (dane wpychane w momencie submit, po pomyślnej walidacji)
+            id: undefined,                            // tu ma być kolejne ID z FireBase? TODO
+            date: currentTime.getFullYear()+"/"+currentMonth+"/"+currentTime.getDate(),
+            status: "OPEN",
+            user: "Aneta",  // tu ma być zalogowany user TODO
+            customer: this.state.customer,
+            item: this.state.itemList,
+            logo: this.state.logoList
+        };
+
+        // wygeneruj nowe Id:
+        let idRef = db.collection("Counter").doc("Count1");
+        idRef.get().then(function(doc) {
+            if (doc.exists) {
+                console.log("Counter - data:", doc.data().counter);
+                orderInfo.id = doc.data().counter + 1;
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("Counter - No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Counter - Error getting document:", error);
+        });
+
+        this.getPricelist();                  // ściągnięcie cennika z Firebase
+        this.setState({order: orderInfo});    // zapisanie zamówienia do state
+        this.setState({showSummary: true})    // pokazanie podsumowania (do finalnego zatwierdzenia)
     };
     editOrder = (childInfo) => {
-      this.setState({showSummary: childInfo})
+        this.setState({showSummary: childInfo})
     };
     saveToDB = (childInfo) => { // ta funkcja do wywalenia???
         // zapisz do FireBase TODO
@@ -281,18 +296,18 @@ class NewOrder extends React.Component {
                 </form>
             </div>
         </div>;
-                    // po wciśnięciu submit, formularz się chowa i wyświetla się podsumowanie (metoda sumOrder):
-                    if (this.state.showSummary) {
-                        return <OrderSummary
-                            formInfo={this.state.itemList}
-                            logoInfo={this.state.logoList}
-                            priceInfo={this.state.priceInfo}
-                            orderInfo={this.state.order}
-                            proceed={this.saveToDB}
-                            backToEdit={this.editOrder} />
-                    } else {
-                        return orderForm
-                    }
+        // po wciśnięciu submit, formularz się chowa i wyświetla się podsumowanie (metoda sumOrder):
+        if (this.state.showSummary) {
+            return <OrderSummary
+                formInfo={this.state.itemList}
+                logoInfo={this.state.logoList}
+                priceInfo={this.state.priceInfo}
+                orderInfo={this.state.order}
+                proceed={this.saveToDB}
+                backToEdit={this.editOrder} />
+        } else {
+            return orderForm
+        }
     }
 }
 
