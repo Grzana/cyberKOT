@@ -14,7 +14,7 @@ class MainSection extends React.Component {
     render() {
         return <div className={"main"}>
             <div className={"header"}>
-                <span>Witaj user</span>
+                <span>Witaj, {this.props.user}!</span>
                 <div>Logo odpowiedniej firmy</div>
             </div>
             <div className={"options"}>

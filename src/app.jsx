@@ -11,27 +11,36 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            activateMain: false,
-            show: "login"
+            user: "",     // aktualnie zalogowany user
+            show: "login" // które okno pokazuje po odpaleniu apki
         }
     }
     getInfo = (childInfo) => {
-      this.setState({show: childInfo})  // które okno pokazać
+        this.setState({show: childInfo})  // które okno pokazać
+    };
+    getUser = (loggedUser) => {
+        this.setState({user: loggedUser}) // który user jest zalogowany
     };
     render() {
         let show = null;
         switch (this.state.show) {
             case "login":
-                show = <Login whoIsVisible={this.getInfo} />;
+                show = <Login whoIsVisible={this.getInfo} sendLogin={this.getUser} />;
                 break;
             case "main":
-                show = <MainSection whoIsVisible={this.getInfo}/>;
+                show = <MainSection whoIsVisible={this.getInfo} user={this.state.user} />;
                 break;
             case "newOrder":
-                show = <NewOrder whoIsVisible={this.getInfo} className={"new-order-component"} />
+                show = <NewOrder whoIsVisible={this.getInfo} user={this.state.user} className={"new-order-component"} />
                 break;
             case "admin":
-                show = <AdminPanel whoIsVisible={this.getInfo}/>
+                if (this.state.user === "Admin") {
+                    show = <AdminPanel whoIsVisible={this.getInfo}/>
+                }
+                else {
+                    console.log("Brak uprawnień do panelu");
+                    show = <MainSection whoIsVisible={this.getInfo} user={this.state.user} />;
+                }
         }
         return <div className={"center"}>
             {show}
