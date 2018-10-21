@@ -5,6 +5,7 @@ import Login from './login.jsx';
 import MainSection from './main_section.jsx';
 import NewOrder from './new.jsx';
 import AdminPanel from './admin_panel.jsx';
+import History from './history.jsx';
 
 
 class App extends React.Component {
@@ -12,7 +13,7 @@ class App extends React.Component {
         super(props);
         this.state = {
             user: "",     // aktualnie zalogowany user
-            show: "login" // które okno pokazuje po odpaleniu apki
+            show: "history" // które okno pokazuje po odpaleniu apki
         }
     }
     getInfo = (childInfo) => {
@@ -32,6 +33,9 @@ class App extends React.Component {
                 break;
             case "newOrder":
                 show = <NewOrder whoIsVisible={this.getInfo} user={this.state.user} className={"new-order-component"} />
+                break;
+            case "history":
+                show = <History whoIsVisible={this.getInfo} />
                 break;
             case "admin":
                 if (this.state.user === "Admin") {
