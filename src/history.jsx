@@ -16,9 +16,9 @@ class Table extends React.Component {
         let rows = [];
         for (let i = 0; i < orders.length; i++) {
             let columns = [];
-            let tags = ['id', 'date', 'customer', 'user', 'status']; // these are column names
+            let tags = ['id', 'date', 'customer', 'user', 'status']; // these are column names (and object keys)
             for (let j = 0; j < tags.length; j++) {
-                let tag = tags[j];
+                let tag = tags[j]; // iterate through tags array 
                 columns.push(orders[i][tag]);
             };
 
@@ -26,13 +26,15 @@ class Table extends React.Component {
             // where elements are arrays (named 'columns') with 5 elements -> check tags array
         };
         return rows
-        //this.getOrders().then(result => console.log('result: ', result));
     };
 
     render() {
         return <table>
             <tbody>
-                {this.printTable(this.props.data).map((el, i) => <tr key={i}><td>{el}</td></tr>)}
+                {this.printTable(this.props.data).map((el, i) => {
+                    return <tr key={i}>{el.map((elEl, j) => <td key={j}>{elEl}</td>)}</tr>
+                }
+                )}
             </tbody>
         </table>
     }
@@ -49,11 +51,13 @@ class History extends React.Component {
 
     getOrders = () => { // query all documents from "Orders" collection
         let arr = [];
-        return db.collection("Orders").get().then((querySnapshot) => {
-            querySnapshot.forEach(doc => arr.push(doc.data()));
-            this.setState({ caught: true, data: arr });
-            return arr;
-        });
+        if (this.state.caught) { return null } else {
+            return db.collection("Orders").get().then((querySnapshot) => {
+                querySnapshot.forEach(doc => arr.push(doc.data()));
+                this.setState({ caught: true, data: arr });
+                return arr;
+            })
+        };
     };
 
     render() {
@@ -68,7 +72,7 @@ class History extends React.Component {
             <div>
                 <h1>Historia zleceń</h1>
             </div>
-                {this.info}
+            {this.info}
             <div>
                 <button>Cofnij</button>
             </div>
