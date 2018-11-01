@@ -220,7 +220,7 @@ class NewOrder extends React.Component {
         let currentTime = new Date();
         let currentMonth = currentTime.getMonth()+1;
         let orderInfo = {                     // obiekt finalny (dane wpychane w momencie submit, po pomyślnej walidacji)
-            id: undefined,                    // tu ma być kolejne ID z FireBase? TODO
+            id: undefined,                    // tu ma być kolejne ID z FireBase
             date: currentTime.getFullYear()+"/"+currentMonth+"/"+currentTime.getDate(),
             status: "OTWARTE",
             user: this.props.user,

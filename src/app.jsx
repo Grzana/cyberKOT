@@ -12,7 +12,7 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            user: "",     // aktualnie zalogowany user
+            user: "Admin",     // aktualnie zalogowany user
             show: "history" // które okno pokazuje po odpaleniu apki
         }
     }
@@ -35,7 +35,7 @@ class App extends React.Component {
                 show = <NewOrder whoIsVisible={this.getInfo} user={this.state.user} className={"new-order-component"} />
                 break;
             case "history":
-                show = <History whoIsVisible={this.getInfo} />
+                show = <History whoIsVisible={this.getInfo} user={this.state.user} />
                 break;
             case "admin":
                 if (this.state.user === "Admin") {
