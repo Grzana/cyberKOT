@@ -12,13 +12,13 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            user: "Admin",     // aktualnie zalogowany user
+            user: "",     // aktualnie zalogowany user
             show: "history" // które okno pokazuje po odpaleniu apki
         }
     }
     getInfo = (childInfo) => {
         this.setState({show: childInfo})  // które okno pokazać
-    };
+    }; 
     getUser = (loggedUser) => {
         this.setState({user: loggedUser}) // który user jest zalogowany
     };

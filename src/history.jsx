@@ -9,12 +9,30 @@ class Loading extends React.Component {
     }
 }
 
+class More extends React.Component {
+
+    printTable = (order) => {
+        return <div>
+            <button>Zamknij</button>
+            <h1>Zamówienie {order.id}</h1>
+            <h2>Data: {order.date}</h2>
+            <h2>Klient: {order.customer}</h2>
+            <h2>Pracownik: {order.user}</h2>
+            <h2>Status: {order.status}</h2>
+        </div>
+    };
+
+    render() {
+        return this.printTable(this.props.order);
+    }
+}
+
 class Table extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             show: false,
-            showData: "",
+            showData: {},
         }
     }
 
@@ -40,8 +58,15 @@ class Table extends React.Component {
         let idTab = tr.children[0].innerHTML; // id of clicked order
         let name = "Zamówienie " + idTab; // this order name 
         let ref = db.collection("Orders").doc(name);
-        this.setState({show: true, showData: ref}); // TODO: pokazać okienko z danym zamówieniem
-    };
+        ref.get().then((doc) => {
+            if (doc.exists) {
+                this.setState({show: true, showData: doc.data()}); // TODO: pokazać okienko z danym zamówieniem
+            } else {
+                console.log("No such document!");
+            }}).catch(function(error) {
+                console.log("Error getting document:", error);
+            });
+    }; 
 
     printTable = (orders) => {
 
@@ -57,11 +82,25 @@ class Table extends React.Component {
             rows.push(columns); // outcome: rows: array with orders 
             // where elements are arrays (named 'columns') with 5 elements -> check tags array
         };
-        return rows
+        return rows;
     };
 
     render() {
-        return <table>
+        let more = null
+        if (this.state.show) {
+            more = <More order={this.state.showData}/> // More Component will be shown when the button '+' is clicked
+        }
+        return <div>
+        <table>
+            <thead>
+                <tr>
+                    <td>NR</td>
+                    <td>DATA</td>
+                    <td>KLIENT</td>
+                    <td>PRACOWNIK</td>
+                    <td>STATUS ZLECENIA</td>
+                </tr>
+            </thead>
             <tbody>
                 {this.printTable(this.props.data).map((el, i) => {
                     return <tr key={i}>{el.map((elEl, j) => <td key={j}>{
@@ -72,6 +111,8 @@ class Table extends React.Component {
                 )}
             </tbody>
         </table>
+        <div>{more}</div>
+        </div>
     }
 }
 
