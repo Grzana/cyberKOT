@@ -11,19 +11,48 @@ class Loading extends React.Component {
 
 class More extends React.Component {
 
+    closeWindow = () => {
+        this.props.close(false);
+    };
+
     printTable = (order) => {
+        return order.item.map( (el, i) => <tr key={i}>
+            <td key={'number'}>{i+1}</td>
+            <td key={'value'}>{el.value}</td>
+            <td key={'color'}>{el.color}</td>
+            <td key={'size'}>{el.qtyInfo.map((item, j) => <ul key={j}>
+                <li key={item.id}>{item.size} - {item.qty}</li>
+            </ul>)}</td>
+            <td key='notes'>{el.notes}</td>
+        </tr>); 
+    };
+
+    printOrder = (order) => { // generates order view from the order in firebase sent via props from parent More Component
+        
         return <div>
-            <button>Zamknij</button>
+            <button onClick={this.closeWindow}>Zamknij</button>
             <h1>Zamówienie {order.id}</h1>
             <h2>Data: {order.date}</h2>
             <h2>Klient: {order.customer}</h2>
             <h2>Pracownik: {order.user}</h2>
             <h2>Status: {order.status}</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <td>Nr</td>
+                        <td>Artykuł</td>
+                        <td>Kolor</td>
+                        <td>Rozmiary</td>
+                        <td>Uwagi</td>
+                    </tr>
+                </thead>
+                <tbody>{this.printTable(this.props.order)}</tbody>
+            </table>
         </div>
     };
 
     render() {
-        return this.printTable(this.props.order);
+        return this.printOrder(this.props.order);
     }
 }
 
@@ -85,10 +114,16 @@ class Table extends React.Component {
         return rows;
     };
 
+    closeWindow = (childInfo) => {
+        this.setState({show: childInfo});
+    }
+
     render() {
         let more = null
         if (this.state.show) {
-            more = <More order={this.state.showData}/> // More Component will be shown when the button '+' is clicked
+            more = <More                // More Component will be shown when the button '+' is clicked
+                    order={this.state.showData} 
+                    close={this.closeWindow}/> 
         }
         return <div>
         <table>
